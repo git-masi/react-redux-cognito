@@ -1,0 +1,97 @@
+service: react-redux-cognito
+
+frameworkVersion: '2'
+
+plugins:
+  - serverless-bundle
+  - serverless-pseudo-parameters
+  - serverless-offline
+  - serverless-cloudside-plugin
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs12.x
+  memorySize: 256
+  apiGateway:
+    shouldStartNameWithService: true
+  environment:
+    COGNITO_GENERIC_USER_POOL_ID: !Ref GenericUserPool
+    COGNITO_GENERIC_USER_CLIENT_ID: !Ref GenericUserClient
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'cognito-idp:AdminConfirmSignUp'
+        - 'cognito-idp:AdminCreateUser'
+        - 'cognito-idp:AdminGetUser'
+        - 'cognito-idp:AdminSetUserPassword'
+        - 'cognito-idp:AdminUpdateUserAttributes'
+        - 'cognito-idp:DescribeUserPool'
+        - 'cognito-idp:ListUsers'
+      Resource:
+        - !GetAtt GenericUserPool.Arn
+
+custom:
+  serverless-offline:
+    httpPort: 4321
+
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+    GenericUserClient:
+      Type: 'AWS::Cognito::UserPoolClient'
+      Properties:
+        ClientName: react-redux-cognito-generic-user-client
+        GenerateSecret: False
+        UserPoolId:
+          Ref: GenericUserPool
+    GenericUserPool:
+      Type: 'AWS::Cognito::UserPool'
+      Properties:
+        UserPoolName: react-redux-cognito-generic-user
+        MfaConfiguration: 'OFF'
+        # AccountRecoverySetting:
+        # - email
+        AliasAttributes:
+          - email
+          # - preferred_username
+        # UsernameAttributes:
+        #   - email
+        #   - 'userId'
+        #   - 'username'
+        Schema:
+          - Name: email
+            Required: true
+            Mutable: true
+          # - Name: 'userId'
+          #   Mutable: false
+          #   AttributeDataType: String
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: True
+            RequireSymbols: False
+            RequireUppercase: True
+
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
+
+functions:
+  signUp:
+    handler: handlers/signUp.handler
+    events:
+      - http:
+          path: users/sign-up
+          method: post
+          cors: true

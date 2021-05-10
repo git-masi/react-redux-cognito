@@ -1,0 +1,30 @@
+{
+  "name": "react-redux-cognito-back-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "sls offline cloudside"
+  },
+  "keywords": [],
+  "author": "Eric Masi",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-bundle": "^4.3.0",
+    "serverless-cloudside-plugin": "^1.0.4",
+    "serverless-offline": "^7.0.0",
+    "serverless-pseudo-parameters": "^2.5.0"
+  },
+  "dependencies": {
+    "@middy/core": "^2.2.0",
+    "@middy/http-cors": "^2.2.0",
+    "@middy/http-error-handler": "^2.2.0",
+    "@middy/http-event-normalizer": "^2.2.0",
+    "@middy/http-json-body-parser": "^2.2.0",
+    "@middy/validator": "^2.2.0",
+    "aws-sdk": "^2.902.0",
+    "http-errors": "^1.8.0",
+    "lodash.clonedeep": "^4.5.0",
+    "uuid": "^8.3.2"
+  }
+}
