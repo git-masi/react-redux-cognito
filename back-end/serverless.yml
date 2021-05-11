@@ -108,3 +108,11 @@ functions:
           path: users/log-in
           method: post
           cors: true
+
+  refreshAuthTokens:
+    handler: handlers/refreshAuthTokens.handler
+    events:
+      - http:
+          path: users/refresh
+          method: post
+          cors: true
