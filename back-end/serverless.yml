@@ -26,6 +26,7 @@ provider:
         - 'cognito-idp:AdminGetUser'
         - 'cognito-idp:AdminSetUserPassword'
         - 'cognito-idp:AdminUpdateUserAttributes'
+        - 'cognito-idp:AdminInitiateAuth'
         - 'cognito-idp:DescribeUserPool'
         - 'cognito-idp:ListUsers'
       Resource:
@@ -46,27 +47,18 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: 'ApiGatewayRestApi'
-    GenericUserClient:
-      Type: 'AWS::Cognito::UserPoolClient'
-      Properties:
-        ClientName: react-redux-cognito-generic-user-client
-        GenerateSecret: False
-        UserPoolId:
-          Ref: GenericUserPool
     GenericUserPool:
       Type: 'AWS::Cognito::UserPool'
       Properties:
         UserPoolName: react-redux-cognito-generic-user
         MfaConfiguration: 'OFF'
-        # AccountRecoverySetting:
-        # - email
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: verified_email
+              Priority: 1
         AliasAttributes:
           - email
-          # - preferred_username
-        # UsernameAttributes:
-        #   - email
-        #   - 'userId'
-        #   - 'username'
+          - preferred_username
         Schema:
           - Name: email
             Required: true
@@ -81,6 +73,24 @@ resources:
             RequireNumbers: True
             RequireSymbols: False
             RequireUppercase: True
+    GenericUserClient:
+      Type: 'AWS::Cognito::UserPoolClient'
+      Properties:
+        ClientName: react-redux-cognito-generic-user-client
+        UserPoolId:
+          Ref: GenericUserPool
+        GenerateSecret: False
+        # AccessTokenValidity: 3600
+        # IdTokenValidity: 3600
+        # RefreshTokenValidity: 2592000 # num seconds in 30 days
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+          - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        # SupportedIdentityProviders:
+        #   - COGNITO
+        #   - FACEBOOK
+        #   - Google
 
 #  Outputs:
 #     NewOutput:
@@ -93,5 +103,13 @@ functions:
     events:
       - http:
           path: users/sign-up
+          method: post
+          cors: true
+
+  logIn:
+    handler: handlers/logIn.handler
+    events:
+      - http:
+          path: users/log-in
           method: post
           cors: true
