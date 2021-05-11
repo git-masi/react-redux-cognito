@@ -1,5 +1,6 @@
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 import { apiResponse, HTTPError } from '../utils/apiResponse';
+import { authFlows, challengeNames } from '../utils/cognito';
 import { commonMiddlewareWithValidator } from '../utils/middleware';
 
 const { COGNITO_GENERIC_USER_POOL_ID, COGNITO_GENERIC_USER_CLIENT_ID } =
@@ -29,19 +30,6 @@ const schema = {
   required: ['body'],
 };
 const validationOptions = { inputSchema: schema };
-
-const challengeNames = Object.freeze({
-  SMS_MFA: 'SMS_MFA',
-  SOFTWARE_TOKEN_MFA: 'SOFTWARE_TOKEN_MFA',
-  SELECT_MFA_TYPE: 'SELECT_MFA_TYPE',
-  MFA_SETUP: 'MFA_SETUP',
-  PASSWORD_VERIFIER: 'PASSWORD_VERIFIER',
-  CUSTOM_CHALLENGE: 'CUSTOM_CHALLENGE',
-  DEVICE_SRP_AUTH: 'DEVICE_SRP_AUTH',
-  DEVICE_PASSWORD_VERIFIER: 'DEVICE_PASSWORD_VERIFIER',
-  ADMIN_NO_SRP_AUTH: 'ADMIN_NO_SRP_AUTH',
-  NEW_PASSWORD_REQUIRED: 'NEW_PASSWORD_REQUIRED',
-});
 
 export const handler = commonMiddlewareWithValidator(logIn, validationOptions);
 
@@ -92,7 +80,7 @@ async function logIn(event) {
 
 function createInitAuthParams(data) {
   return {
-    AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
+    AuthFlow: authFlows.ADMIN_USER_PASSWORD_AUTH,
     UserPoolId: COGNITO_GENERIC_USER_POOL_ID,
     ClientId: COGNITO_GENERIC_USER_CLIENT_ID,
     AuthParameters: {
