@@ -84,24 +84,23 @@ function createCognitoUserParams(data) {
   return {
     UserPoolId: COGNITO_GENERIC_USER_POOL_ID,
     Username: uuid(),
-    // TemporaryPassword: 'NewpasS!23',
     UserAttributes: [
-      { Name: 'preferred_username', Value: email },
       { Name: 'email', Value: email },
-      // {
-      //   // This is probably not the best practice in the real world
-      //   // By doing this we are assuming the email is valid and that
-      //   // the new user has access to the email address
-      //   Name: 'email_verified',
-      //   Value: 'true',
-      // },
-      // optional custom attributes
-      // {
-      //   Name: 'custom:userId',
-      //   Value: data.id, // id from create fn call
-      // },
+      {
+        // This is probably not the best practice in the real world.
+        // By doing this we are assuming the email is valid and that
+        // the new user has access to the email address.
+        // However, without this we cannot use the email as the username
+        // when the user logs in for the first time.
+        // As long as we don't supply the temporary password and suppress
+        // the confirm email to the user though, they will need access
+        // to the email address to get the initial password.
+        // An alternative would be to verify the email before adding it
+        // here.
+        Name: 'email_verified',
+        Value: 'true',
+      },
     ],
     DesiredDeliveryMediums: ['EMAIL'],
-    // MessageAction: 'SUPPRESS',
   };
 }
