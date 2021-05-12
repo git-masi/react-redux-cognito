@@ -22,3 +22,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.p-xy-2 {
+  padding: 2rem;
+}
+
+.m-center {
+  margin: 0 auto;
+}
+
+.m-b-2 {
+  margin-bottom: 2rem;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  align-items: center;
+  justify-content: center;
+}

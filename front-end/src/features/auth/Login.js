@@ -6,10 +6,17 @@ export default function Login() {
   const onSubmit = (data) => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('username')} />
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex-col flex-center m-center p-xy-2"
+    >
+      <label className="m-b-2">
+        Username: <input {...register('username')} />
+      </label>
 
-      <input {...register('password')} />
+      <label className="m-b-2">
+        Password: <input {...register('password')} />
+      </label>
 
       <button type="submit">Submit</button>
     </form>
