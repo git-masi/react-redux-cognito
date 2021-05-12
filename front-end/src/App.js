@@ -7,13 +7,14 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { selectAuth } from './features/auth/authSlice';
+import Login from './features/auth/Login';
 
 export default function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/log-in">
-          <h1>login</h1>
+        <Route exact path="/login">
+          <Login />
         </Route>
 
         <PrivateRoute path="/user">
@@ -44,7 +45,7 @@ function PrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: '/log-in',
+              pathname: '/login',
               state: { from: location },
             }}
           />
