@@ -1,9 +1,29 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import superagent from 'superagent';
+import { updateTokens } from './authSlice';
+import { useHistory } from 'react-router';
 
 export default function Login() {
   const { register, handleSubmit } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const onSubmit = async (data) => {
+    const {
+      body: { accountStatus, authenticationResult },
+    } = await superagent
+      .post(
+        'https://z9zn346vaf.execute-api.us-east-1.amazonaws.com/dev/users/log-in'
+      )
+      .send(data);
+
+    if (accountStatus === '') {
+      dispatch(updateTokens(authenticationResult));
+      history.push('/user');
+    }
+  };
 
   return (
     <form
