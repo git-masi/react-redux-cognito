@@ -31,11 +31,11 @@ export default function Login() {
       className="flex-col flex-center m-center p-xy-2"
     >
       <label className="m-b-2">
-        Username: <input {...register('username')} />
+        Username: <input type="text" {...register('username')} />
       </label>
 
       <label className="m-b-2">
-        Password: <input {...register('password')} />
+        Password: <input type="password" {...register('password')} />
       </label>
 
       <button type="submit">Submit</button>
