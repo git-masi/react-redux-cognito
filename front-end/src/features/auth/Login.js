@@ -55,13 +55,17 @@ export default function Login() {
         )
         .send(data);
 
-      if (accountStatus === '') {
+      if (
+        authenticationResult?.AccessToken &&
+        authenticationResult?.IdToken &&
+        authenticationResult?.RefreshToken
+      ) {
         dispatch(updateTokens(authenticationResult));
-        history.push('/user');
+        return history.push('/user');
       }
 
       if (accountStatus === accountStatuses.NEW_PASSWORD_REQUIRED) {
-        dispatchView({ type: viewKeys.newPassword });
+        return dispatchView({ type: viewKeys.newPassword });
       }
 
       throw new Error('oops');
@@ -88,10 +92,14 @@ export default function Login() {
           </label>
 
           {view.newPassword && (
-            <label className="m-b-2">
-              New Password:{' '}
-              <input type="password" {...register('newPassword')} />
-            </label>
+            <>
+              <label className="m-b-2">
+                New Password:{' '}
+                <input type="password" {...register('newPassword')} />
+              </label>
+
+              <p>Please enter a new password 🥺</p>
+            </>
           )}
 
           <button type="submit">Submit</button>
