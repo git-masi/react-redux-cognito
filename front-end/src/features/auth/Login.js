@@ -2,7 +2,7 @@ import React, { useReducer } from 'react';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import superagent from 'superagent';
-import { updateTokens } from './authSlice';
+import { initRefreshTimer, updateTokens } from './authSlice';
 import { useHistory } from 'react-router';
 
 export const accountStatuses = Object.freeze({
@@ -60,6 +60,9 @@ export default function Login() {
         authenticationResult?.IdToken &&
         authenticationResult?.RefreshToken
       ) {
+        const { ExpiresIn, RefreshToken } = authenticationResult; // expiration time in seconds
+        const time = (ExpiresIn - 10) * 1000; // give buffer before expiration, convert to ms
+        dispatch(initRefreshTimer(time, RefreshToken));
         dispatch(updateTokens(authenticationResult));
         return history.push('/user');
       }
