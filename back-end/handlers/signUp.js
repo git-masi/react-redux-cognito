@@ -36,7 +36,8 @@ async function signUp(event) {
     const { email } = body;
 
     // could do this with PreSignUp_AdminCreateUser
-    if (await emailIsTaken(email)) throw HTTPError.BadRequest('Email is taken');
+    if (await emailIsTaken(email))
+      throw new HTTPError(409, { message: 'Email is taken' });
 
     const createUserRes = await cognito
       .adminCreateUser(createCognitoUserParams({ ...body }))
