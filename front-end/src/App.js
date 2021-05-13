@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Login from './features/auth/Login';
 import PrivateRoute from './features/auth/PrivateRoute';
+import Signup from './features/auth/Signup';
 
 export default function App() {
   return (
@@ -9,6 +10,10 @@ export default function App() {
       <Switch>
         <Route exact path="/login">
           <Login />
+        </Route>
+
+        <Route exact path="/signup">
+          <Signup />
         </Route>
 
         <PrivateRoute path="/user">
